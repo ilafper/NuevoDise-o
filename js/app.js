@@ -105,13 +105,13 @@ $(document).ready(function () {
     function calcularTotal() {
         let total = 0;
         $('.item-carrito').each(function () {
-            let cantidad = parseInt($(this).find('.cantidad-input').val());
-            let precio = parseFloat($(this).find('.arriba p:nth-child(2)').text().trim().replace('€', ''));
+            let cantidad = $(this).find('.cantidad-input').val();
+            let precio =$(this).find('.arriba p:nth-child(2)').text().trim().replace('€', '');
             total += cantidad * precio;
         });
 
         // Mostrar el total en el contenedor adecuado
-        $('.total').text(total.toFixed(2) + '€');
+        $('.total').text(total + '€');
     }
 
     $(document).ready(function () {
@@ -175,6 +175,35 @@ $(document).ready(function () {
                 }
             });
         });
+        
+        $(document).on("input", ".cantidad-input", function () {
+            let item = $(this).closest(".item-carrito");
+            let productId = item.data("codigo");
+            let nuevaCantidad = parseInt($(this).val());
+
+            if (nuevaCantidad > 0) {
+                // Actualizar el carrito (en el frontend)
+                $.ajax({
+                    url: '../php/actualizarCarrito.php',
+                    method: 'POST',
+                    data: {
+                        codigo: productId,
+                        cantidad: nuevaCantidad
+                    },
+                    success: function (response) {
+                        // Actualizar el total
+                        calcularTotal();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al actualizar la cantidad en el carrito:", error);
+                    }
+                });
+            } else {
+                $(this).val(1);  // Restablecer a 1 si el valor es inválido
+            }
+        });
+
+
 
         $(document).on("click", ".bx-trash", function () {
             let item = $(this).closest(".item-carrito");
