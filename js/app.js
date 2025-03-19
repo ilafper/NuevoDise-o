@@ -25,7 +25,7 @@ $(document).ready(function () {
                                     <h5>${producto.nombre}</h5>
                                     <p class="descripcion">${producto.descripcion}</p>
                                     <p class="precio">${producto.precio}€</p>
-                                    <p class="stock">${producto.stok}</p>
+                                    <p class="stock"><strong>Stock:</strong>${producto.stok}</p>
                                 </div>
                                 <div class="button">
                                     <button class="añadir">AÑADIR CARRITO</button>
