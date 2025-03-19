@@ -66,7 +66,7 @@ if (isset($_SESSION["usuario_id"])) {
         <div class="container-fluid">
             <section class="logo">
                 <a class="navbar-brand" href="admin.php">
-                    <img src="../src/figura.png" alt="Logo del grupo" width="100" class="logito">
+                    <img src="../src/adorable.png" alt="Logo del grupo" width="100" class="logito">
                 </a>
             </section>
 

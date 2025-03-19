@@ -19,7 +19,7 @@ $(document).ready(function () {
                         const productoHTML = `
                             <section class="targetaProducto" data-codigo="${producto.codigo}">
                                 <div class="targ-img">
-                                    <img src="../src/adorable.png" alt="${producto.nombre}" class="img-fluid">
+                                    <img src="../src/gatonaranja.jpg" alt="${producto.nombre}" class="img-fluid">
                                 </div>
                                 <div class="info">
                                     <h5>${producto.nombre}</h5>
@@ -320,7 +320,7 @@ $(document).ready(function () {
                                 <p class="codigo">${producto.codigo}</p>
                             `;
                             productosHTML2 += `
-                                <p class="cantidadPeti">Cantidad: ${producto.cantidad}</p>
+                                <p class="cantidadPeti">${producto.cantidad}</p>
                             `;
                         });
 
