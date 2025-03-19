@@ -1,3 +1,54 @@
+<?php
+session_start();
+require('../vendor/autoload.php');
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $usuario = $_POST["username"] ?? null;
+    $contra = $_POST["password"] ?? null;
+
+    if (empty($usuario) || empty($contra)) {
+        header("location:../html/login.html");
+        exit;
+    }
+
+    try {
+        $uri = 'mongodb+srv://ialfper:ialfper21@alumnos.zoinj.mongodb.net/?retryWrites=true&w=majority&appName=alumnos';
+        $client = new MongoDB\Client($uri);
+
+        $db = $client->selectDatabase("Tienda");
+        $collection = $db->selectCollection("login");
+
+        $encontrado = $collection->findOne(["nombre" => $usuario]);
+
+        if ($encontrado && $contra === $encontrado["password"]) {
+            $_SESSION["usuario_id"] = (string) $encontrado["_id"];
+            $_SESSION["usuario_nombre"] = $encontrado["nombre"];
+            $_SESSION["rol"] = $encontrado["rol"] ?? 'usuario'; // Guardamos el rol en la sesión
+            $_SESSION["apellidos"] = $encontrado["apellidos"] ?? '';
+            $_SESSION["correo"] = $encontrado["correo"] ?? '';
+            $_SESSION["direccion"] = $encontrado["direccion"] ?? '';
+            $_SESSION["carrito"] = $encontrado["productos"] ?? [];
+
+            // Redirigir si es admin
+            if ($_SESSION["rol"] === "admin") {
+                header("location:admin.php");
+                exit;
+            }
+        } else {
+            header("location:../html/login.html");
+            exit;
+        }
+    } catch (Exception $error) {
+        http_response_code(500);
+        echo "Error del servidor: " . $error->getMessage();
+        exit;
+    }
+}
+
+// Si el usuario no es admin, mostrar directamente la página de home
+if (isset($_SESSION["usuario_id"])) {
+    $usuario_nombre = $_SESSION["usuario_nombre"];
+    ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -48,94 +99,7 @@
     </nav>
 
     <section class="ProductosWrap">
-        <section class="targetaProducto" data-codigo="G001">
-            <div class="targ-img">
-                <img src="../src/adorable.png" alt="Gato 1" class="img-fluid">
-            </div>
-            <div class="info">
-                <h5>Gato Persa</h5>
-                <p class="descripcion">Pelaje largo y suave, ideal para interiores.</p>
-                <p class="precio">250€</p>
-                <p class="stock">Disponibles: 5</p>
-            </div>
-            <div class="button">
-                <button class="añadir">AÑADIR CARRITO</button>
-            </div>
-        </section>
         
-        <section class="targetaProducto" data-codigo="G002">
-            <div class="targ-img">
-                <img src="../src/adorable.png" alt="Gato 2" class="img-fluid">
-            </div>
-            <div class="info">
-                <h5>Gato Siamés</h5>
-                <p class="descripcion">Ágil, cariñoso y de ojos azules intensos.</p>
-                <p class="precio">180€</p>
-                <p class="stock">Disponibles: 3</p>
-            </div>
-            <div class="button">
-                <button class="añadir">AÑADIR CARRITO</button>
-            </div>
-        </section>
-        
-        <section class="targetaProducto" data-codigo="G003">
-            <div class="targ-img">
-                <img src="../src/adorable.png" alt="Gato 3" class="img-fluid">
-            </div>
-            <div class="info">
-                <h5>Gato Maine Coon</h5>
-                <p class="descripcion">De gran tamaño y muy amigable.</p>
-                <p class="precio">350€</p>
-                <p class="stock">Disponibles: 2</p>
-            </div>
-            <div class="button">
-                <button class="añadir">AÑADIR CARRITO</button>
-            </div>
-        </section>
-        
-        <section class="targetaProducto" data-codigo="G004">
-            <div class="targ-img">
-                <img src="../src/adorable.png" alt="Gato 4" class="img-fluid">
-            </div>
-            <div class="info">
-                <h5>Gato Bengalí</h5>
-                <p class="descripcion">Exótico, activo y con un patrón único.</p>
-                <p class="precio">400€</p>
-                <p class="stock">Disponibles: 4</p>
-            </div>
-            <div class="button">
-                <button class="añadir">AÑADIR CARRITO</button>
-            </div>
-        </section>
-        
-        <section class="targetaProducto" data-codigo="G005">
-            <div class="targ-img">
-                <img src="../src/adorable.png" alt="Gato 5" class="img-fluid">
-            </div>
-            <div class="info">
-                <h5>Gato Esfinge</h5>
-                <p class="descripcion">Sin pelo, pero con una personalidad encantadora.</p>
-                <p class="precio">500€</p>
-                <p class="stock">Disponibles: 1</p>
-            </div>
-            <div class="button">
-                <button class="añadir">AÑADIR CARRITO</button>
-            </div>
-        </section>
-        <section class="targetaProducto" data-codigo="G005">
-            <div class="targ-img">
-                <img src="../src/adorable.png" alt="Gato 5" class="img-fluid">
-            </div>
-            <div class="info">
-                <h5>Gato Esfinge</h5>
-                <p class="descripcion">Sin pelo, pero con una personalidad encantadora.</p>
-                <p class="precio">500€</p>
-                <p class="stock">Disponibles: 1</p>
-            </div>
-            <div class="button">
-                <button class="añadir">AÑADIR CARRITO</button>
-            </div>
-        </section>
         
     </section>
     
@@ -191,3 +155,10 @@
 </body>
 
 </html>
+
+    <?php
+} else {
+    header("location:../html/login.html");
+    exit;
+}
+?>
