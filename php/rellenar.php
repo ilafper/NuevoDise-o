@@ -23,10 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($encontrado && $contra === $encontrado["password"]) {
             $_SESSION["usuario_id"] = (string) $encontrado["_id"];
             $_SESSION["usuario_nombre"] = $encontrado["nombre"];
-            $_SESSION["rol"] = $encontrado["rol"] ?? 'usuario'; // Guardamos el rol en la sesión
+            $_SESSION["rol"] = $encontrado["rol"] ?? 'usuario'; 
             $_SESSION["apellidos"] = $encontrado["apellidos"] ?? '';
             $_SESSION["correo"] = $encontrado["correo"] ?? '';
-            $_SESSION["carrito"] = $encontrado["productos"] ?? [];
 
             // Redirigir si es admin
             if ($_SESSION["rol"] === "admin") {

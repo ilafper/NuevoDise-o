@@ -1,0 +1,106 @@
+function cargarProductos2() {
+        $.ajax({
+            url: '../php/cargarProductos.php',
+            method: 'GET',
+            dataType: 'json',
+    
+            success: function (data) {
+                if (data.success) {
+                    const ActuProductos = $('.restoProductos');
+                    ActuProductos.empty(); // Limpiar el contenido previo
+    
+                    // Recorrer los productos y mostrarlos.
+                    data.productos.forEach(function (producto) {
+                        // Crear la tarjeta del producto
+                        const targetaProducto = `
+                            <section class="targetaProducto" data-codigo="${producto.codigo}">
+                                <div class="targ-img">
+                                    <img src="${producto.imagen}" alt="${producto.nombre}" class="img-fluid">
+                                </div>
+                                <div class="info">
+                                    <h5 class="nombre">${producto.nombre}</h5>
+                                    <p class="descripcion">${producto.descripcion}</p>
+                                    <p class="precio">${producto.precio}€</p>
+                                    <p class="stock"><strong>Stock:</strong> ${producto.stok}</p>
+                                </div>
+                                <div class="button">
+                                    <button class="editar">Editar</button>
+                                </div>
+                            </section>
+                        `;
+                        ActuProductos.append(targetaProducto);
+                    });
+    
+                    // Manejar clic en el botón "Editar"
+                    $('.editar').on('click', function () {
+                        const card = $(this).closest('.targetaProducto');
+                        const codigo = card.data('codigo');
+                        const nombre = card.find('.nombre').text();
+                        const descripcion = card.find('.descripcion').text();
+                        const precio = parseFloat(card.find('.precio').text().replace('€', ''));
+                        const stock = parseInt(card.find('.stock').text().replace('Stock:', '').trim());
+    
+                        // Crear formulario de edición
+                        const formularioEdicion = `
+                            <section class="targetaProducto editando" data-codigo="${codigo}">
+                                <div class="info">
+                                    <input type="text" class="nombre-input" value="${nombre}">
+                                    <textarea class="descripcion-input">${descripcion}</textarea>
+                                    <input type="number" class="precio-input" value="${precio}" step="0.01">
+                                    <input type="number" class="stock-input" value="${stock}" min="0">
+                                </div>
+                                <div class="button">
+                                    <button class="guardar">Guardar</button>
+                                    <button class="cancelar">Cancelar</button>
+                                </div>
+                            </section>
+                        `;
+    
+                        // Reemplazar la tarjeta original con el formulario
+                        card.replaceWith(formularioEdicion);
+    
+                        // Manejar clic en "Guardar"
+                        $('.guardar').on('click', function () {
+                            const form = $(this).closest('.targetaProducto');
+                            const codigo = form.data('codigo');
+                            const nuevoNombre = form.find('.nombre-input').val();
+                            const nuevaDescripcion = form.find('.descripcion-input').val();
+                            const nuevoPrecio = parseFloat(form.find('.precio-input').val());
+                            const nuevoStock = parseInt(form.find('.stock-input').val());
+    
+                            // Enviar datos actualizados al servidor
+                            $.ajax({
+                                url: '../php/actualizarProducto.php',
+                                method: 'POST',
+                                data: {
+                                    codigo: codigo,
+                                    nombre: nuevoNombre,
+                                    descripcion: nuevaDescripcion,
+                                    precio: nuevoPrecio,
+                                    stock: nuevoStock
+                                },
+                                success: function (response) {
+                                    cargarProductos2(); // Recargar la lista de productos
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al actualizar el producto:', error);
+                                }
+                            });
+                        });
+    
+                        // Manejar clic en "Cancelar"
+                        $('.cancelar').on('click', function () {
+                            cargarProductos2(); // Restaurar la tarjeta original sin cambios
+                        });
+                    });
+                } else {
+                    alert('Error al cargar los productos: ' + data.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+    }
+    
+    cargarProductos2();

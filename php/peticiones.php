@@ -44,8 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-
-
 // Si el usuario no es admin, mostrar directamente la página de home
 if (isset($_SESSION["usuario_id"])) {
     $usuario_nombre = $_SESSION["usuario_nombre"];

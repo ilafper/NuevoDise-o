@@ -14,7 +14,7 @@ $(document).ready(function () {
                     // Recorrer los productos y mostrarlos.
                     data.productos.forEach(function (producto) {
                         // console.log(producto);
-                        
+
                         const productoHTML = `
                             <section class="targetaProducto" data-codigo="${producto.codigo}">
                                 <div class="targ-img">
@@ -64,7 +64,7 @@ $(document).ready(function () {
                     data.productos.forEach(function (producto) {
                         let imgSrc = producto.imagen;
                         console.log(imgSrc);
-                        
+
                         const carritoHtml = `
                             <section class="item-carrito d-flex" data-codigo="${producto.codigo}">
                                 <section class="rigth">
@@ -106,7 +106,7 @@ $(document).ready(function () {
         let total = 0;
         $('.item-carrito').each(function () {
             let cantidad = $(this).find('.cantidad-input').val();
-            let precio =$(this).find('.arriba p:nth-child(2)').text().trim().replace('€', '');
+            let precio = $(this).find('.arriba p:nth-child(2)').text().trim().replace('€', '');
             total += cantidad * precio;
         });
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
             let nombre = card.find("h5").text();
             let precio = card.find(".precio").text().replace().trim();
             let imgSrc = card.find("img").attr("src");
-
+            let stockMax = parseInt(card.find(".stock").text().replace("Stock:", "").trim());
             // Verificar si ya está en el carrito
             let itemExistente = $(".listaCarrito").find(`[data-codigo="${productId}"]`);
 
@@ -143,7 +143,7 @@ $(document).ready(function () {
                         </section>
                         <section class="abajo d-flex align-items-center gap-2">
                             <section class="canti d-flex align-items-center gap-2">
-                                <input type="number" class="cantidad-input" value="1" min="1">
+                                <input type="number" class="cantidad-input" value="1" min="1" max="${stockMax}">
                             </section>
                             <section class="trash">
                                 <i class='bx bx-trash'></i>
@@ -164,6 +164,7 @@ $(document).ready(function () {
                     nombre: nombre,
                     precio: precio,
                     cantidad: 1,
+                    imagen: imgSrc
 
                 },
                 success: function (response) {
@@ -175,33 +176,37 @@ $(document).ready(function () {
                 }
             });
         });
-        
+
         $(document).on("input", ".cantidad-input", function () {
             let item = $(this).closest(".item-carrito");
-            let productId = item.data("codigo");
+            let stockMaximo = parseInt(item.find(".cantidad-input").attr("max"));
             let nuevaCantidad = parseInt($(this).val());
 
-            if (nuevaCantidad > 0) {
-                
-                $.ajax({
-                    url: '../php/actualizarCarrito.php',
-                    method: 'POST',
-                    data: {
-                        codigo: productId,
-                        cantidad: nuevaCantidad
-                    },
-                    success: function (response) {
-                        // Actualizar el total
-                        calcularTotal();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error al actualizar la cantidad en el carrito:", error);
-                    }
-                });
-            } else {
-                $(this).val(1);  // Restablecer a 1 si el valor es inválido
+            // Validar que la cantidad no supere el stock disponible
+            if (nuevaCantidad > stockMaximo) {
+                $(this).val(stockMaximo);  // Ajustar al máximo disponible
+            } else if (nuevaCantidad < 1 || isNaN(nuevaCantidad)) {
+                $(this).val(1);  // Ajustar al mínimo permitido
             }
+
+            let productId = item.data("codigo");
+
+            $.ajax({
+                url: '../php/actualizarCarrito.php',
+                method: 'POST',
+                data: {
+                    codigo: productId,
+                    cantidad: $(this).val()
+                },
+                success: function (response) {
+                    calcularTotal();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error al actualizar la cantidad en el carrito:", error);
+                }
+            });
         });
+
 
 
 
@@ -258,61 +263,121 @@ $(document).ready(function () {
     //cargar productos para rellernar
     function cargarProductos2() {
         $.ajax({
-            url: '../php/cargarProductos.php', 
+            url: '../php/cargarProductos.php',
             method: 'GET',
             dataType: 'json',
-
             success: function (data) {
                 if (data.success) {
                     const ActuProductos = $('.restoProductos');
-                    ActuProductos.empty(); // Limpiar el contenido previo
-
-                    // Recorrer los productos y mostrarlos.
+                    ActuProductos.empty(); // Limpiar contenido previo
+    
                     data.productos.forEach(function (producto) {
-                        // Crear una fila con los campos correspondientes para cada producto
-                        const productosRellenar = `
+                        // Crear la tarjeta del producto
+                        const targetaProducto = `
                             <section class="targetaProducto" data-codigo="${producto.codigo}">
+                                <div class="targ-img">
+                                    <img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto img-fluid">
+                                </div>
                                 <div class="info">
-                                    <h5>${producto.nombre}</h5>
+                                    <h5 class="nombre">${producto.nombre}</h5>
                                     <p class="descripcion">${producto.descripcion}</p>
                                     <p class="precio">${producto.precio}€</p>
-                                    <p class="stock"><strong>Stock:</strong>${producto.stok}</p>
+                                    <p class="stock"><strong>Stock:</strong> ${producto.stok}</p>
                                 </div>
                                 <div class="button">
                                     <button class="editar">Editar</button>
                                 </div>
                             </section>
                         `;
-                        ActuProductos.append(productosRellenar); // Agregar la fila al contenedor
+                        ActuProductos.append(targetaProducto);
                     });
-
-                    // Manejar clic en el botón de actualización
-                    $('.actualizar').on('click', function () {
-                        const fila = $(this).closest('tr');
-                        const codigo = fila.data('codigo');
-                        const nuevaCantidad = fila.find('.nueva-cantidad').val();
-
-                        if (nuevaCantidad > 0) {
-                            // Enviar la actualización del stock al servidor
+    
+                    // Evento para editar
+                    $('.editar').on('click', function () {
+                        const targetaRellenar = $(this).closest('.targetaProducto');
+                        const codigo = targetaRellenar.data('codigo');
+                        const nombreActual = targetaRellenar.find('h5').text();
+                        const descripcionActual = targetaRellenar.find('.descripcion').text();
+                        const precioActual = targetaRellenar.find('.precio').text().replace('€', '');
+                        const stockActual = targetaRellenar.find('.stock').text().replace('Stock:', '').trim();
+                        const imagenActual = targetaRellenar.find('.imagen-producto').attr('src').split('/').pop(); // Obtener solo el nombre de la imagen
+    
+                        // Lista de imágenes disponibles (a machete)
+                        const imagenesDisponibles = [
+                            "gato1.jpg", "gato2.jpg", "gato3.jpg", "gato4.jpg",
+                            "gato4.png", "gato6.png", "gato7.jpg", "gatonaranja.jpg"
+                        ];
+    
+                        // Crear select de imágenes
+                        let opcionesImagenes = imagenesDisponibles.map(img =>
+                            `<option value="../src/${img}" ${img === imagenActual ? 'selected' : ''}>${img}</option>`
+                        ).join('');
+    
+                        // Formulario de edición
+                        //me cago en el text area.
+                        const formularioEdicion = `
+                            <div class="formulario-edicion">
+                                <div class="campo-edicion">
+                                    <label for="nombre">Nombre del producto:</label>
+                                    <input type="text" class="nombre" value="${nombreActual}">
+                                </div>
+                                <div class="campo-edicion">
+                                    <label for="descripcion">Descripción del producto:</label>
+                                    <input type="text" class="descripcion" value="${descripcionActual}">
+                                </div>
+                                <div class="campo-edicion">
+                                    <label for="precio">Precio del producto:</label>
+                                    <input type="number" class="precio2" value="${precioActual}">
+                                </div>
+                                <div class="campo-edicion">
+                                    <label for="stock">Cantidad en stock:</label>
+                                    <input type="number" class="stock" value="${stockActual}">
+                                </div>
+                                <div class="campo-edicion">
+                                    <label for="imagen">Seleccionar imagen:</label>
+                                    <select class="imagen">${opcionesImagenes}</select>
+                                </div>
+                                <div class="button">
+                                    <button class="guardar">Guardar</button>
+                                    <button class="cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        `;
+    
+                        targetaRellenar.html(formularioEdicion);
+    
+                        // Evento para guardar cambios
+                        $('.guardar').on('click', function () {
+                            const nuevaImagen = targetaRellenar.find('.imagen').val(); // Se guarda con ../src/
+                            const nuevoNombre = targetaRellenar.find('.nombre').val();
+                            const nuevaDescripcion = targetaRellenar.find('.descripcion').val();
+                            const nuevoPrecio = targetaRellenar.find('.precio2').val();
+                            const nuevoStock = targetaRellenar.find('.stock').val();
+    
                             $.ajax({
-                                url: '../php/actualizarStock.php',
+                                url: '../php/actualizarProducto.php',
                                 method: 'POST',
                                 data: {
                                     codigo: codigo,
-                                    cantidad: nuevaCantidad
+                                    nombre: nuevoNombre,
+                                    descripcion: nuevaDescripcion,
+                                    precio: nuevoPrecio,
+                                    stock: nuevoStock,
+                                    imagen: nuevaImagen
                                 },
                                 success: function (response) {
-                                    //alert('okok');
-                                    cargarProductos2(); // Recargar los productos después de la actualización
+                                    cargarProductos2(); // Recargar productos
                                 },
                                 error: function (xhr, status, error) {
-                                    console.error('Error al actualizar stock:', error);
-                                    //alert('nonono');
+                                    console.error('Error al actualizar producto:', error);
                                 }
                             });
-                        } else {
-                            alert('Por favor ingresa una cantidad válida.');
-                        }
+                        });
+    
+                        // Evento para cancelar
+                        $('.cancelar').on('click', function () {
+                            cargarProductos2(); // Restaurar la tarjeta original sin cambios
+                        });
                     });
                 } else {
                     alert('Error al cargar los productos: ' + data.error);
@@ -323,9 +388,11 @@ $(document).ready(function () {
             }
         });
     }
-
-
+    
     cargarProductos2();
+    
+
+
 
 
 
@@ -372,20 +439,20 @@ $(document).ready(function () {
 
                         peticiones.append(peticionHTML);
                         //console.log(peticionHTML);
-                        
-                        
+
+
                     });
 
 
                     // Manejar clic en el botón de actualización
                     $('.aceptarPeti').on('click', function () {
                         let id = $(this).data('id');
-                        
+
                         $.ajax({
                             url: '../php/aceptarPeti.php',
                             method: 'POST',
                             data: {
-                               codigo: id, estado: "aceptada"
+                                codigo: id, estado: "aceptada"
                             },
                             success: function (response) {
                                 //alert('okok');
@@ -402,24 +469,24 @@ $(document).ready(function () {
                     $('.rechazarPeti').on('click', function () {
                         let id = $(this).data('id');
                         let productosPeti = []; // Para almacenar las cantidades de los productos
-                    
+
                         // Encontrar todos los productos dentro de la petición
                         $(this).closest('tr').find('.cantidadPeti').each(function (index) {
 
                             let cantidad = $(this).text().replace("Cantidad: ", "");
                             let codigo = $(this).closest('tr').find('.codigo').eq(index).text();
                             productosPeti.push({ codigo: codigo, cantidad: cantidad });
-                             
+
 
                         });
                         console.log(productosPeti);
-                        
+
                         $.ajax({
                             url: '../php/rechazarPeti.php',
                             method: 'POST',
                             data: {
-                                codigo: id, 
-                                estado: "rechazada", 
+                                codigo: id,
+                                estado: "rechazada",
                                 productos: productosPeti // Pasar el array de productos con sus cantidades
                             },
                             success: function (response) {
@@ -432,7 +499,7 @@ $(document).ready(function () {
                             }
                         });
                     });
-                    
+
                 } else {
                     alert('Error al cargar las peticiones: ' + data.error);
                 }
@@ -452,9 +519,9 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.success) {
-                    const historial= $('.historialWrap'); // Contenedor donde se insertará el historial
+                    const historial = $('.historialWrap'); // Contenedor donde se insertará el historial
                     historial.empty(); // Limpiar el contenido previo
-                    
+
                     data.historialPeticiones.forEach(function (cosa) {
                         // Crear una clase que se asignará según el estado
                         let estadoColorClass = '';
@@ -463,7 +530,7 @@ $(document).ready(function () {
                         } else if (cosa.estado === 'rechazada') {
                             estadoColorClass = 'colorRechazada';
                         }
-                    
+
                         // Crear la fila con los datos de la petición
                         const historialHTML = `
                             <section class="targetHistorial" data-user='${cosa.nombre_usuario}' data-estado='${cosa.estado}' data-carrito='${JSON.stringify(cosa.carrito)}'>
@@ -471,23 +538,23 @@ $(document).ready(function () {
                                 <p><strong>Estado:</strong> <span class="${estadoColorClass}">${cosa.estado}</span></p>
                             </section>
                         `;
-                    
+
                         historial.append(historialHTML);
                     });
-                    
-                    
+
+
                     $(".targetHistorial").on("click", function () {
                         const usuario = $(this).data("user");
                         const estado = $(this).data("estado");
                         const carrito = $(this).data("carrito");
-    
+
                         // Construir la lista de productos en el carrito
                         let productosHTML = '<ul>';
                         carrito.forEach(producto => {
                             productosHTML += `<li><strong>Código:</strong> ${producto.codigo}, <strong>Cantidad:</strong> ${producto.cantidad}</li>`;
                         });
                         productosHTML += '</ul>';
-    
+
                         // Insertar los datos en el modal
                         $("#historialDetalles").html(`
                             <p><strong>Nombre Solicitante:</strong> ${usuario}</p>
@@ -498,7 +565,7 @@ $(document).ready(function () {
                             </section>
                             
                         `);
-    
+
                         $("#historialModal").css("display", "block");
                     });
                 } else {
@@ -511,12 +578,12 @@ $(document).ready(function () {
         });
     }
     cargarHistorial();
-    
+
     // Cerrar modal al hacer clic en la "X"
     $(".btnclose").on("click", function () {
         $("#historialModal").css("display", "none");
     });
-    
-    
+
+
 
 });

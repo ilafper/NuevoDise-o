@@ -10,9 +10,9 @@ if (!isset($_SESSION["usuario_id"])) {
 $usuario_id = $_SESSION["usuario_id"];
 $codigo = $_POST["codigo"] ?? null;
 $nombre = $_POST["nombre"] ?? null;
-$precio = floatval($_POST["precio"] ?? null); // Usamos floatval() para asegurar que el precio sea decimal
+$precio = intval($_POST["precio"] ?? null);
 $cantidad = intval($_POST["cantidad"] ?? 1);
-
+$imagen = $_POST["imagen"] ?? null;
 if (!$codigo) {
     echo json_encode(["success" => false, "error" => "Falta el ID del producto"]);
     exit;
@@ -52,6 +52,7 @@ try {
             "nombre" => $nombre,
             "precio" => $precio,
             "cantidad" => $cantidad,
+            "imagen"=>$imagen
         ];
     }
 

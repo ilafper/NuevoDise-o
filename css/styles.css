@@ -207,7 +207,7 @@ h5 {
     justify-content: center;
 }
 
-.añadir {
+.añadir, .editar {
     background-color: #000;
     color: #fff;
     border: none;
@@ -391,7 +391,9 @@ h5 {
 
 
 /*ADMIN PETICIONES */
-
+.cosa1{
+    margin-top: 4%;
+}
 .restoProductos{
     display: flex;
     flex-wrap: wrap;
@@ -471,26 +473,39 @@ h5 {
     background-color: #c82333;
 }
 
-/*RELLERNAR STOCK*/
+/*editar Producto*/
 
-.actualizar{
-    border: 2px solid black;
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+.formulario-edicion {
+    width: 100%;
+    font-family: Arial, sans-serif;
+    padding: 15px;
 }
 
-.actualizar:hover{
-    background-color: #000000;
-    color: white;
+.campo-edicion {
+    margin-bottom: 15px;
 }
-.nueva-cantidad{
-    border: 1px solid rgb(187, 187, 187);
-    border-radius: 5px;
-    padding: 4px;
+
+.campo-edicion label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000000; /* Color gris oscuro */
 }
+
+.campo-edicion input,
+.campo-edicion textarea,
+.campo-edicion select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 4px;
+    font-size: 14px;
+    color: #000000; /* Color del texto */
+}
+
+
 
 /*targeta historial*/
-
 .historialWrap {
     display: flex;
     flex-wrap: wrap;
