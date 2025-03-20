@@ -50,18 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 if (isset($_SESSION["usuario_id"])) {
     $usuario_nombre = $_SESSION["usuario_nombre"];
     ?>
+<!DOCTYPE html>
+<html lang="es">
 
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-        <link rel="stylesheet" href="../css/styles.css">
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
     <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
         <div class="container-fluid">
             <section class="logo">
@@ -70,17 +71,19 @@ if (isset($_SESSION["usuario_id"])) {
                 </a>
             </section>
 
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto d-flex justify-content-end align-items-center w-100 gap-4">
                     <li class="nav-item">
-                        <a href="#" class="bx bx-user icono-usuario" data-bs-toggle="modal" data-bs-target="#userModal"></a>
-                        <span><?php echo htmlspecialchars($usuario_nombre); ?></span>
+                        <a href="#" class="bx bx-user icono-usuario" data-bs-toggle="modal"
+                            data-bs-target="#userModal"></a>
+                        <span>
+                            <?php echo htmlspecialchars($usuario_nombre); ?>
+                        </span>
                     </li>
 
                     <li class="nav-item">
@@ -92,8 +95,23 @@ if (isset($_SESSION["usuario_id"])) {
         </div>
     </nav>
 
-    <section class="restoProductos">
-        
+    <section class="cosa1">
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Usuario que hace la peticion</th>
+                        <th scope="col">Cod. Producto</th>
+                        <th scope="col">Cantidad Solicitada</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+
+                <tbody class="peticiones">
+                   
+                </tbody>
+            </table>
+        </div>
     </section>
 
 
@@ -105,10 +123,16 @@ if (isset($_SESSION["usuario_id"])) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Nombre:</strong> <?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?></p>
-                    <p><strong>Rol:</strong> <?php echo htmlspecialchars($_SESSION["rol"] ?? ''); ?></p>
-                    <p><strong>Correo:</strong> <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?></p>
-                    
+                    <p><strong>Nombre:</strong>
+                        <?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?>
+                    </p>
+                    <p><strong>Rol:</strong>
+                        <?php echo htmlspecialchars($_SESSION["rol"] ?? ''); ?>
+                    </p>
+                    <p><strong>Correo:</strong>
+                        <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?>
+                    </p>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="boton-cerrar btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -122,9 +146,9 @@ if (isset($_SESSION["usuario_id"])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/app.js"></script>
-    </body>
-    </html>
+</body>
 
+</html>
     <?php
 } else {
     header("location:../html/login.html");

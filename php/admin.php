@@ -89,34 +89,45 @@ if (isset($_SESSION["usuario_id"])) {
                     <li class="nav-item">
                         <a class="cerrar" href="cerrar.php">Cerrar sesión</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="rellenar" href="rellenar.php">Rellenar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="historial" href="historial.php">Historial</a>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <section class="cosa1">
-        <div class="container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Usuario que hace la peticion</th>
-                        <th scope="col">Cod. Producto</th>
-                        <th scope="col">Cantidad Solicitada</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
+    <section class="funcionesAdmin">
+        <a class="direccion1"  href="rellenar.php">
+            <section class="">
+                <i class='iconoCosa bx bx-edit'></i>
+            </section>
+            <section class="">
+                <h1>EDITAR PRODUCTO</h1>
+            </section>
+        </a>
+        <a class="direccion1" href="peticiones.php">
+            <section class="">
+                <i class='iconoCosa bx bx-envelope'></i>
+            </section>
+            <section class="">
+                <h1>PETICIONES</h1>
+            </section>
+        </a>
+        <a class="direccion1" href="historial.php">
+            <section>
+            <i class='iconoCosa bx bx-history'></i>
+            </section>
+            <section>
+                <h1>HISTORIAL PETICIONES</h1>
+            </section>
+        </a>
+        <a class="direccion1" href="nuevoProduct.php">
+            <section>
+            <i class='iconoCosa bx bx-plus-circle'></i>
 
-                <tbody class="peticiones">
-                   
-                </tbody>
-            </table>
-        </div>
+            </section>
+            <section>
+                <h1>NUEVO PRODUCTO</h1>
+            </section>
+        </a>
     </section>
 
 

@@ -62,12 +62,13 @@ $(document).ready(function () {
 
                     // Recorrer los productos del carrito y mostrarlos
                     data.productos.forEach(function (producto) {
-
-
+                        let imgSrc = producto.imagen;
+                        console.log(imgSrc);
+                        
                         const carritoHtml = `
                             <section class="item-carrito d-flex" data-codigo="${producto.codigo}">
                                 <section class="rigth">
-                                    <img src="../src/adorable.png" alt="${producto.nombre}" width="50">
+                                    <img src="${imgSrc}" alt="${producto.nombre}" width="50">
                                 </section>
                                 <section class="left d-flex flex-column w-100">
                                     <section class="arriba">
@@ -181,7 +182,7 @@ $(document).ready(function () {
             let nuevaCantidad = parseInt($(this).val());
 
             if (nuevaCantidad > 0) {
-                // Actualizar el carrito (en el frontend)
+                
                 $.ajax({
                     url: '../php/actualizarCarrito.php',
                     method: 'POST',
@@ -253,11 +254,11 @@ $(document).ready(function () {
             });
         });
     });
-    //cargar productos para rellernar
 
+    //cargar productos para rellernar
     function cargarProductos2() {
         $.ajax({
-            url: '../php/cargarProductos.php', // Ruta al archivo PHP
+            url: '../php/cargarProductos.php', 
             method: 'GET',
             dataType: 'json',
 
@@ -270,13 +271,17 @@ $(document).ready(function () {
                     data.productos.forEach(function (producto) {
                         // Crear una fila con los campos correspondientes para cada producto
                         const productosRellenar = `
-                            <tr classs="filaTabla" data-codigo="${producto.codigo}">
-                                <td>${producto.codigo}</td>
-                                <td>${producto.nombre}</td>
-                                <td>${producto.stok}</td>
-                                <td><input type="number" class="nueva-cantidad" min="0" value="0"></td>
-                                <td><button class="btn actualizar">Actualizar</button></td>
-                            </tr>
+                            <section class="targetaProducto" data-codigo="${producto.codigo}">
+                                <div class="info">
+                                    <h5>${producto.nombre}</h5>
+                                    <p class="descripcion">${producto.descripcion}</p>
+                                    <p class="precio">${producto.precio}€</p>
+                                    <p class="stock"><strong>Stock:</strong>${producto.stok}</p>
+                                </div>
+                                <div class="button">
+                                    <button class="editar">Editar</button>
+                                </div>
+                            </section>
                         `;
                         ActuProductos.append(productosRellenar); // Agregar la fila al contenedor
                     });
