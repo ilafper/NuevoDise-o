@@ -97,26 +97,9 @@ if (isset($_SESSION["usuario_id"])) {
         </div>
     </nav>
 
-    <section class="cosa1">
-        <div class="container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Código Producto</th>
-                        <th scope="col">Nombre Producto</th>
-                        <th scope="col">Stock Actual</th>
-                        <th scope="col">Nueva Cantidad</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                
-                <tbody class="restoProductos">
-                    
-                </tbody>
-            </table>
-        </div>
+    <section class="historialWrap">
+        
     </section>
-
 
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -131,10 +114,16 @@ if (isset($_SESSION["usuario_id"])) {
                     <p><strong>Correo:</strong> <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?></p>
                     
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="boton-cerrar btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal HISTORIAL-->
+    <div id="historialModal" class="modal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="contentHistorial">
+            <span class="btnclose">&times;</span>
+            <h2>Detalles del Historial</h2>
+            <div id="historialDetalles"></div>
         </div>
     </div>
 

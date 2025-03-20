@@ -14,12 +14,11 @@ $(document).ready(function () {
                     // Recorrer los productos y mostrarlos.
                     data.productos.forEach(function (producto) {
                         // console.log(producto);
-
                         
                         const productoHTML = `
                             <section class="targetaProducto" data-codigo="${producto.codigo}">
                                 <div class="targ-img">
-                                    <img src="../src/gatonaranja.jpg" alt="${producto.nombre}" class="img-fluid">
+                                    <img src="${producto.imagen}" alt="${producto.nombre}" class="img-fluid">
                                 </div>
                                 <div class="info">
                                     <h5>${producto.nombre}</h5>
@@ -34,7 +33,7 @@ $(document).ready(function () {
                         `;
                         productosWrap.append(productoHTML); // Agregar al contenedor
 
-                        //console.log(producto);
+                        console.log(producto);
 
                     });
 
@@ -367,7 +366,7 @@ $(document).ready(function () {
                         `;
 
                         peticiones.append(peticionHTML);
-                        console.log(peticionHTML);
+                        //console.log(peticionHTML);
                         
                         
                     });
@@ -441,7 +440,78 @@ $(document).ready(function () {
 
     cargarPeticiones();
 
-
-
+    function cargarHistorial() {
+        $.ajax({
+            url: '../php/cargarHistorial.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    const historial= $('.historialWrap'); // Contenedor donde se insertará el historial
+                    historial.empty(); // Limpiar el contenido previo
+                    
+                    data.historialPeticiones.forEach(function (cosa) {
+                        // Crear una clase que se asignará según el estado
+                        let estadoColorClass = '';
+                        if (cosa.estado === 'aceptada') {
+                            estadoColorClass = 'colorAceptada';
+                        } else if (cosa.estado === 'rechazada') {
+                            estadoColorClass = 'colorRechazada';
+                        }
+                    
+                        // Crear la fila con los datos de la petición
+                        const historialHTML = `
+                            <section class="targetHistorial" data-user='${cosa.nombre_usuario}' data-estado='${cosa.estado}' data-carrito='${JSON.stringify(cosa.carrito)}'>
+                                <p><strong>Nombre Solicitante:</strong> ${cosa.nombre_usuario}</p>
+                                <p><strong>Estado:</strong> <span class="${estadoColorClass}">${cosa.estado}</span></p>
+                            </section>
+                        `;
+                    
+                        historial.append(historialHTML);
+                    });
+                    
+                    
+                    $(".targetHistorial").on("click", function () {
+                        const usuario = $(this).data("user");
+                        const estado = $(this).data("estado");
+                        const carrito = $(this).data("carrito");
+    
+                        // Construir la lista de productos en el carrito
+                        let productosHTML = '<ul>';
+                        carrito.forEach(producto => {
+                            productosHTML += `<li><strong>Código:</strong> ${producto.codigo}, <strong>Cantidad:</strong> ${producto.cantidad}</li>`;
+                        });
+                        productosHTML += '</ul>';
+    
+                        // Insertar los datos en el modal
+                        $("#historialDetalles").html(`
+                            <p><strong>Nombre Solicitante:</strong> ${usuario}</p>
+                            <p><strong>Estado:</strong> ${estado}</p>
+                            <p><strong>Productos en el carrito:</strong></p>
+                            <section class="listaHistorialProductos">
+                                ${productosHTML}
+                            </section>
+                            
+                        `);
+    
+                        $("#historialModal").css("display", "block");
+                    });
+                } else {
+                    alert('Error al cargar el historial de peticiones: ' + data.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+    }
+    cargarHistorial();
+    
+    // Cerrar modal al hacer clic en la "X"
+    $(".btnclose").on("click", function () {
+        $("#historialModal").css("display", "none");
+    });
+    
+    
 
 });

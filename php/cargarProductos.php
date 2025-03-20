@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
                 "descripcion" => $producto["descripcion"],
                 "precio" => intval($producto["precio"]),
                 "stok" => intval($producto["cantidad_stock"]),
+                "imagen" => $producto["imagen"],
             ];
         }
 

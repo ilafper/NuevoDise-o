@@ -92,6 +92,9 @@ if (isset($_SESSION["usuario_id"])) {
                     <li class="nav-item">
                         <a class="rellenar" href="rellenar.php">Rellenar</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="historial" href="historial.php">Historial</a>
+                    </li>
                 </ul>
             </div>
         </div>

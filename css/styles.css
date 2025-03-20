@@ -39,9 +39,6 @@ a:hover {
     color: #000000;
 }
 
-.logo img {
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
-}
 
 
 .boton {
@@ -162,13 +159,13 @@ a:hover {
 }
 
 .targetaProducto:hover {
-    transform: scale(1.03); /* Aumentar solo la tarjeta que recibe el hover */
+    transform: scale(1.02); 
 }
 
 /* Estilos para el contenedor de la imagen */
 .targ-img {
-    width: 60%;
-    height: 60%;
+    width: 70%;
+    height: 50%;
     display: flex;
     justify-content: center;
     align-items: center; 
@@ -178,7 +175,6 @@ a:hover {
 /* Estilos para la imagen */
 .targ-img img {
     width: 100%;
-    height: 100%;
     object-fit: cover; 
 }
 
@@ -491,3 +487,115 @@ h5 {
     border-radius: 5px;
     padding: 4px;
 }
+
+/*targeta historial*/
+
+
+.historialWrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 5%;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+
+.targetHistorial {
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+.targetHistorial p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+
+.targetHistorial p strong {
+    color: #000000;
+}
+
+/* Estilo para el modal */
+.historialModal {
+    display: none; /* Inicialmente oculto */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-in-out; /* Animación de entrada */
+}
+
+
+.contentHistorial {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+
+/* Título del modal */
+.contentHistorial h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+
+#historialDetalles {
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+/* Botón de cierre */
+.btnclose {
+    position: absolute;
+    top: 1px;
+    right: 10px;
+    font-size:40px;
+    color: #000000;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.listaHistorialProductos{
+    background-color: rgba(165, 165, 165, 0.233);
+    border-radius:5px;
+    padding: 5px;
+    margin-top: -10px;
+}
+
+
+.colorAceptada {
+    color: green;
+}
+
+.colorRechazada {
+    color: red;
+}
+
+
+
+
