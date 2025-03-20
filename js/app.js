@@ -2,10 +2,9 @@ $(document).ready(function () {
     // Función para cargar los productos
     function cargarProductos() {
         $.ajax({
-            url: '../php/cargarProductos.php', // Ruta al archivo PHP
+            url: '../php/cargarProductos.php',
             method: 'GET',
-            dataType: 'json', // Esperamos respuesta en formato JSON
-
+            dataType: 'json',
             success: function (data) {
                 if (data.success) {
                     const productosWrap = $('.ProductosWrap');
@@ -31,9 +30,8 @@ $(document).ready(function () {
                                 </div>
                             </section>
                         `;
-                        productosWrap.append(productoHTML); // Agregar al contenedor
-
-                        console.log(producto);
+                        productosWrap.append(productoHTML);
+                        //console.log(producto);
 
                     });
 
@@ -302,7 +300,7 @@ $(document).ready(function () {
                         const stockActual = targetaRellenar.find('.stock').text().replace('Stock:', '').trim();
                         const imagenActual = targetaRellenar.find('.imagen-producto').attr('src').split('/').pop(); // Obtener solo el nombre de la imagen
     
-                        // Lista de imágenes disponibles (a machete)
+                        // Lista de imágenes disponibles que tengo en mi carpeta de src.
                         const imagenesDisponibles = [
                             "gato1.jpg", "gato2.jpg", "gato3.jpg", "gato4.jpg",
                             "gato4.png", "gato6.png", "gato7.jpg", "gatonaranja.jpg"
@@ -337,7 +335,7 @@ $(document).ready(function () {
                                     <label for="imagen">Seleccionar imagen:</label>
                                     <select class="imagen">${opcionesImagenes}</select>
                                 </div>
-                                <div class="button">
+                                <div class="bototo">
                                     <button class="guardar">Guardar</button>
                                     <button class="cancelar">Cancelar</button>
                                 </div>
@@ -584,6 +582,56 @@ $(document).ready(function () {
         $("#historialModal").css("display", "none");
     });
 
+
+
+
+    //CREACION DE NUEVO PRODUCTO.
+    $(document).ready(function() {
+        $('#formNuevoProducto').on('submit', function(event) {
+            event.preventDefault();  
+    
+            // Recoger los datos del formulario
+            const nuevaImagen = $('#imagen').val();  
+            const nuevoNombre = $('#nombre').val();
+            const nuevaDescripcion = $('#descripcion').val();
+            const nuevoPrecio = $('#precio').val(); 
+            const nuevoStock = $('#stock').val();
+    
+            // Validación básica de los campos
+            if (nuevoNombre === '' || nuevaDescripcion === '' || nuevoPrecio === '' || nuevoStock === '') {
+                alert('Todos los campos son obligatorios.');
+                return;
+            }
+    
+            // Hacer la solicitud AJAX para crear el nuevo producto
+            $.ajax({
+                url: 'GuardarNuevoProducto.php',  // Ruta al archivo PHP que va a procesar los datos
+                method: 'POST',  // Método HTTP
+                data: {
+                    nombre: nuevoNombre,
+                    descripcion: nuevaDescripcion,
+                    precio: nuevoPrecio,
+                    stock: nuevoStock,
+                    imagen: nuevaImagen
+                },
+                success: function(response) {
+                    // Aquí se maneja la respuesta del servidor
+                    var data = JSON.parse(response);  // Parsear la respuesta JSON
+                    if (data.success) {
+                        alert('Producto creado con éxito');
+                        // Limpiar el formulario después de la creación exitosa
+                        $('#formNuevoProducto')[0].reset();
+                    } else {
+                        alert('Error: ' + data.mensaje);
+                    }
+                },
+                error: function() {
+                    alert('Hubo un error en la solicitud.');
+                }
+            });
+        });
+    });
+    
 
 
 });

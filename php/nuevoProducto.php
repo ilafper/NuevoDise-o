@@ -5,6 +5,7 @@ require('../vendor/autoload.php');
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $usuario = $_POST["username"] ?? null;
     $contra = $_POST["password"] ?? null;
+    
 
     if (empty($usuario) || empty($contra)) {
         header("location:../html/login.html");
@@ -26,7 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["rol"] = $encontrado["rol"] ?? 'usuario'; // Guardamos el rol en la sesión
             $_SESSION["apellidos"] = $encontrado["apellidos"] ?? '';
             $_SESSION["correo"] = $encontrado["correo"] ?? '';
-            $_SESSION["direccion"] = $encontrado["direccion"] ?? '';
             $_SESSION["carrito"] = $encontrado["productos"] ?? [];
 
             // Redirigir si es admin
@@ -45,9 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Si el usuario no es admin, mostrar directamente la página de home
+
+
 if (isset($_SESSION["usuario_id"])) {
     $usuario_nombre = $_SESSION["usuario_nombre"];
+    $imagenesDisponibles = [
+        "gato1.jpg", "gato2.jpg", "gato3.jpg", "gato4.jpg",
+        "gato5.png", "gato6.png", "gato7.jpg"
+    ];
     ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -55,7 +60,7 @@ if (isset($_SESSION["usuario_id"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="../css/styles.css">
@@ -65,7 +70,7 @@ if (isset($_SESSION["usuario_id"])) {
     <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
         <div class="container-fluid">
             <section class="logo">
-                <a class="navbar-brand" href="login.php">
+                <a class="navbar-brand" href="admin.php">
                     <img src="../src/adorable.png" alt="Logo del grupo" width="100" class="logito">
                 </a>
             </section>
@@ -88,21 +93,52 @@ if (isset($_SESSION["usuario_id"])) {
                     <li class="nav-item">
                         <a class="cerrar" href="cerrar.php">Cerrar sesión</a>
                     </li>
-                    <li class="nav-item">
-                        <button id="open-cart-btn" class="nav-link" aria-label="Ver carrito">
-                            <a href="#carrito"><i class="bx bx-cart"></i></a>
-                        </button>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <section class="papa">
+        <form class="nuevoProduc" id="formNuevoProducto" method="POST">
+            <h1>NUEVO PRODUCTO</h1>
+            <div class="campo-edicion">
+                <label for="nombre">Nombre del producto:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
 
-    <section class="ProductosWrap">
-        
-        
+            <div class="campo-edicion">
+                <label for="descripcion">Descripción del producto:</label>
+                <input type="text" id="descripcion" name="descripcion" required>
+            </div>
+
+            <div class="campo-edicion">
+                <label for="precio">Precio del producto:</label>
+                <input type="number" id="precio" name="precio" required>
+            </div>
+
+            <div class="campo-edicion">
+                <label for="stock">Cantidad en stock:</label>
+                <input type="number" id="stock" name="stock" required>
+            </div>
+
+            <div class="campo-edicion">
+                <label for="imagen">Seleccionar imagen:</label>
+                <select id="imagen">
+                    <?php
+                    // Generamos las opciones de imágenes
+                    foreach ($imagenesDisponibles as $imagen) {
+                        echo "<option value='../src/$imagen'>$imagen</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <div class="campo-edicion">
+                <button type="submit" class="nuevoProduct">Nuevo Producto</button>
+            </div>
+        </form>
     </section>
     
+
 
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -112,39 +148,21 @@ if (isset($_SESSION["usuario_id"])) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Usuario:</strong> <?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?></p>
-                    <p><strong>Apellidos:</strong> <?php echo htmlspecialchars($_SESSION["apellidos"] ?? ''); ?></p>
-                    <p><strong>Correo:</strong> <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?></p>
-                    <p><strong>Dirección:</strong> <?php echo htmlspecialchars($_SESSION["direccion"] ?? ''); ?></p>
+                    <p><strong>Nombre:</strong>
+                        <?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?>
+                    </p>
+                    <p><strong>Rol:</strong>
+                        <?php echo htmlspecialchars($_SESSION["rol"] ?? ''); ?>
+                    </p>
+                    <p><strong>Correo:</strong>
+                        <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?>
+                    </p>
+
                 </div>
+                
             </div>
         </div>
     </div>
-
-    <section id="carrito" class="carrito">
-        <section class="titi">
-            <h3>TU CARRITO</h3>
-            <a href="#"><i class='bx bx-x'></i></a>
-        </section>
-
-        <section class="subtiti">
-            <h4>Producto</h4>
-            <h4>Precio</h4>
-        </section>
-
-        <section class="listaCarrito">
-        </section>
-
-        <section class="fin">
-            <section class="upup">
-                <h3>TOTAL</h3>
-                <p class="total">0</p>
-            </section>
-            <section>
-                <button class="realizarPedido">REALIZAR PEDIDO</button>
-            </section>
-        </section>
-    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -152,7 +170,6 @@ if (isset($_SESSION["usuario_id"])) {
 </body>
 
 </html>
-
     <?php
 } else {
     header("location:../html/login.html");

@@ -109,9 +109,7 @@ if (isset($_SESSION["usuario_id"])) {
                     <p><strong>Correo:</strong> <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?></p>
                     
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="boton-cerrar btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+                
             </div>
         </div>
     </div>

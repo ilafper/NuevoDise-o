@@ -112,7 +112,6 @@ if (isset($_SESSION["usuario_id"])) {
                     <p><strong>Nombre:</strong> <?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?></p>
                     <p><strong>Rol:</strong> <?php echo htmlspecialchars($_SESSION["rol"] ?? ''); ?></p>
                     <p><strong>Correo:</strong> <?php echo htmlspecialchars($_SESSION["correo"] ?? ''); ?></p>
-                    
                 </div>
             </div>
         </div>

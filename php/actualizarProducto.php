@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $actualizacion = [];
-
-    if (!empty($cantidad) && is_numeric($cantidad) && $cantidad >= 0) {
+    //validar el numero para que no esta vacio, sea un numero y sea mayor que cero
+    if (!empty($cantidad) && is_numeric($cantidad) && $cantidad >0) {
         $actualizacion['cantidad_stock'] = (int)$cantidad;
     }
 

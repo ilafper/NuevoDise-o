@@ -5,7 +5,7 @@ require('../vendor/autoload.php');
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $usuario = $_POST["username"] ?? null;
     $contra = $_POST["password"] ?? null;
-
+    
     if (empty($usuario) || empty($contra)) {
         header("location:../html/login.html");
         exit;
@@ -49,7 +49,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 // Si el usuario no es admin, mostrar directamente la página de home
 if (isset($_SESSION["usuario_id"])) {
     $usuario_nombre = $_SESSION["usuario_nombre"];
+    $imagenesDisponibles = [
+        "gato1.jpg", "gato2.jpg", "gato3.jpg", "gato4.jpg",
+        "gato5.png", "gato6.png", "gato7.jpg", "gatonaranja.jpg"
+    ];
     ?>
+    
 <!DOCTYPE html>
 <html lang="es">
 
@@ -104,25 +109,24 @@ if (isset($_SESSION["usuario_id"])) {
             </section>
         </a>
         <a class="direccion1" href="peticiones.php">
-            <section class="">
+            <section>
                 <i class='iconoCosa bx bx-envelope'></i>
             </section>
-            <section class="">
+            <section>
                 <h1>PETICIONES</h1>
             </section>
         </a>
         <a class="direccion1" href="historial.php">
             <section>
-            <i class='iconoCosa bx bx-history'></i>
+                <i class='iconoCosa bx bx-history'></i>
             </section>
             <section>
                 <h1>HISTORIAL PETICIONES</h1>
             </section>
         </a>
-        <a class="direccion1" href="nuevoProduct.php">
+        <a class="direccion1" href="nuevoProducto.php">
             <section>
-            <i class='iconoCosa bx bx-plus-circle'></i>
-
+                <i class='iconoCosa bx bx-plus-circle'></i>
             </section>
             <section>
                 <h1>NUEVO PRODUCTO</h1>
@@ -150,9 +154,7 @@ if (isset($_SESSION["usuario_id"])) {
                     </p>
 
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="boton-cerrar btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+                
             </div>
         </div>
     </div>

@@ -212,7 +212,7 @@ h5 {
     color: #fff;
     border: none;
     padding: 10px 15px;
-    font-size: 1rem;
+    font-size:20px;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s ease;
@@ -406,7 +406,7 @@ h5 {
 }
 
 
-/* Tabla */
+/* Tabla de peticiones */
 .table {
     color: #fff; /* Texto blanco */
     background-color: #000000; /* Fondo gris oscuro */
@@ -492,18 +492,56 @@ h5 {
     color: #000000; /* Color gris oscuro */
 }
 
-.campo-edicion input,
-.campo-edicion textarea,
-.campo-edicion select {
+.campo-edicion input, .campo-edicion textarea, .campo-edicion select {
     width: 100%;
     padding: 8px;
     border: 1px solid rgb(0, 0, 0);
     border-radius: 4px;
     font-size: 14px;
-    color: #000000; /* Color del texto */
+    color: #000000;
 }
 
 
+.campo-edicion input:focus {
+    outline: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.863) !important;
+}
+
+
+
+.formulario-edicion .bototo{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.formulario-edicion .bototo {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.bototo .guardar, .cancelar{
+    color: white;
+    border: none;
+    border-radius:5px ;
+    padding: 10px;
+
+}
+
+.bototo .guardar{
+    background-color: #28a745;
+}
+.bototo .cancelar{
+    background-color: #c02424ce;
+}
 
 /*targeta historial*/
 .historialWrap {
@@ -543,17 +581,17 @@ h5 {
 
 /* Estilo para el modal */
 .historialModal {
-    display: none; /* Inicialmente oculto */
+    display: none; 
     position: absolute;
     left: 50%;
     top: 50%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    background-color: rgba(0, 0, 0, 0.7); 
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    animation: fadeIn 0.3s ease-in-out; /* Animación de entrada */
+    animation: fadeIn 0.3s ease-in-out; 
 }
 
 
@@ -614,39 +652,110 @@ h5 {
 
 /*FUNCIONESADMIN*/
 
-.funcionesAdmin{
+.funcionesAdmin {
     display: flex;
-    flex-wrap: wrap;
-    gap:60px;
+    flex-wrap: wrap;  
     justify-content: center;
     align-items: center;
-    margin-top: 5%;
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 5%;
+    gap: 50px;
+    margin-top: 4%;
+    margin-left: 4%;
+    margin-right: 4%;
 }
 
-
-.direccion1{
-    background-color: #000;
-    color: white;
+.direccion1 {
     text-decoration: none;
-    padding: 3%;
     display: flex;
     flex-direction: column;
+    align-items: center;  
     justify-content: center;
-    align-items: center;
+    padding: 10px;
+    width: 600px; 
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #020202;
+    color: white;
 }
 
-.direccion1{
-    width:40%;
+.direccion1 i{
+    font-size: 100px;  
+    margin-bottom: 10px;
 }
+
+.direccion1 h1{
+    color: white;
+}
+
 
 .direccion1:hover{
     color: white;
-    background-color: rgb(85, 85, 85);
-}
-.iconoCosa{
-    font-size: 100px;
 }
 
+/*NUEVO PRODUCTO*/
+.papa {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-top: 4%;
+}
+
+.nuevoProduc {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 25%;
+}
+
+.nuevoProduc h1 {
+    text-align: center;
+    font-size: 40px;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+.campo-edicion {
+    margin-bottom: 20px;
+}
+
+.campo-edicion label {
+    display: block;
+    font-size: 14px;
+    color: #0e0e0e;
+    margin-bottom: 8px;
+}
+
+.campo-edicion input, .campo-edicion select {
+    width: 100%;
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.campo-edicion input:focus, .campo-edicion select:focus {
+    border: 1px solid black !important;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+.nuevoProduct {
+    width: 100%;
+    padding: 12px;
+    background-color: #000000;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+select {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+}
