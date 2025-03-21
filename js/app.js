@@ -2,9 +2,10 @@ $(document).ready(function () {
     // Función para cargar los productos
     function cargarProductos() {
         $.ajax({
-            url: '../php/cargarProductos.php',
+            url: '../php/cargarProductos.php', // Ruta al archivo PHP
             method: 'GET',
-            dataType: 'json',
+            dataType: 'json', // Esperamos respuesta en formato JSON
+
             success: function (data) {
                 if (data.success) {
                     const productosWrap = $('.ProductosWrap');
@@ -30,8 +31,9 @@ $(document).ready(function () {
                                 </div>
                             </section>
                         `;
-                        productosWrap.append(productoHTML);
-                        //console.log(producto);
+                        productosWrap.append(productoHTML); // Agregar al contenedor
+
+                        console.log(producto);
 
                     });
 
@@ -47,7 +49,18 @@ $(document).ready(function () {
     }
 
     cargarProductos();
+    function calcularTotal() {
+        let total = 0;
+        $('.item-carrito').each(function () {
+            let cantidad = $(this).find('.cantidad-input').val();
+            let precio = $(this).find('.arriba p:nth-child(2)').text().trim().replace('€', '');
+            total += cantidad * precio;
+        });
 
+        // Mostrar el total en el contenedor adecuado
+        $('.total').text(total + '€');
+    }
+    
     function cargarCarrito() {
         $.ajax({
             url: '../php/cargarCarrito.php', // Ruta al archivo PHP para cargar el carrito
@@ -71,7 +84,7 @@ $(document).ready(function () {
                                 <section class="left d-flex flex-column w-100">
                                     <section class="arriba">
                                         <p>${producto.nombre}</p>
-                                        <p>${producto.precio}€</p>
+                                        <p class="precioUND">${producto.precio}€</p>
                                     </section>
                                     <section class="abajo d-flex align-items-center gap-2">
                                         <section class="canti d-flex align-items-center gap-2">
@@ -100,24 +113,14 @@ $(document).ready(function () {
 
     cargarCarrito();
 
-    function calcularTotal() {
-        let total = 0;
-        $('.item-carrito').each(function () {
-            let cantidad = $(this).find('.cantidad-input').val();
-            let precio = $(this).find('.arriba p:nth-child(2)').text().trim().replace('€', '');
-            total += cantidad * precio;
-        });
-
-        // Mostrar el total en el contenedor adecuado
-        $('.total').text(total + '€');
-    }
+    
 
     $(document).ready(function () {
         $(document).on("click", ".añadir", function () {
             let card = $(this).closest(".targetaProducto");
             let productId = card.data("codigo");
             let nombre = card.find("h5").text();
-            let precio = card.find(".precio").text().replace().trim();
+            let precio = card.find(".precio").text().replace('€', '').trim();
             let imgSrc = card.find("img").attr("src");
             let stockMax = parseInt(card.find(".stock").text().replace("Stock:", "").trim());
             // Verificar si ya está en el carrito
@@ -137,7 +140,7 @@ $(document).ready(function () {
                     <section class="left d-flex flex-column w-100">
                         <section class="arriba">
                             <p>${nombre}</p>
-                            <p class="precioUND">${precio}</p>  
+                            <p class="precioUND">${precio}€</p>  
                         </section>
                         <section class="abajo d-flex align-items-center gap-2">
                             <section class="canti d-flex align-items-center gap-2">
@@ -179,22 +182,27 @@ $(document).ready(function () {
             let item = $(this).closest(".item-carrito");
             let stockMaximo = parseInt(item.find(".cantidad-input").attr("max"));
             let nuevaCantidad = parseInt($(this).val());
-
+        
             // Validar que la cantidad no supere el stock disponible
             if (nuevaCantidad > stockMaximo) {
-                $(this).val(stockMaximo);  // Ajustar al máximo disponible
+                $(this).val(stockMaximo);
+                nuevaCantidad = stockMaximo;
             } else if (nuevaCantidad < 1 || isNaN(nuevaCantidad)) {
-                $(this).val(1);  // Ajustar al mínimo permitido
+                $(this).val(1);
+                nuevaCantidad = 1;
             }
-
+        
             let productId = item.data("codigo");
-
+            let precioUnitario = parseInt(item.find(".precioUND").text().trim().replace('€', '')); // Obtener precio
+        
+            // Enviar la solicitud con la cantidad y el precio unitario
             $.ajax({
                 url: '../php/actualizarCarrito.php',
                 method: 'POST',
                 data: {
                     codigo: productId,
-                    cantidad: $(this).val()
+                    cantidad: nuevaCantidad,
+                    precio: precioUnitario
                 },
                 success: function (response) {
                     calcularTotal();
@@ -204,6 +212,7 @@ $(document).ready(function () {
                 }
             });
         });
+        
 
 
 
@@ -575,27 +584,23 @@ $(document).ready(function () {
             }
         });
     }
+    
     cargarHistorial();
 
     // Cerrar modal al hacer clic en la "X"
     $(".btnclose").on("click", function () {
         $("#historialModal").css("display", "none");
     });
-
-
-
-
-    //CREACION DE NUEVO PRODUCTO.
-    $(document).ready(function() {
-        $('#formNuevoProducto').on('submit', function(event) {
-            event.preventDefault();  
+    $(document).ready(function () {
+        $('#formNuevoProducto').on('submit', function (event) {
+            event.preventDefault();
     
             // Recoger los datos del formulario
-            const nuevaImagen = $('#imagen').val();  
+            const nuevaImagen = $('#imagen').val();
             const nuevoNombre = $('#nombre').val();
             const nuevaDescripcion = $('#descripcion').val();
-            const nuevoPrecio = $('#precio').val(); 
-            const nuevoStock = $('#stock').val();
+            const nuevoPrecio = $('#precio').val();  // Precio
+            const nuevoStock = $('#stock').val();  // Stock
     
             // Validación básica de los campos
             if (nuevoNombre === '' || nuevaDescripcion === '' || nuevoPrecio === '' || nuevoStock === '') {
@@ -605,8 +610,8 @@ $(document).ready(function () {
     
             // Hacer la solicitud AJAX para crear el nuevo producto
             $.ajax({
-                url: 'GuardarNuevoProducto.php',  // Ruta al archivo PHP que va a procesar los datos
-                method: 'POST',  // Método HTTP
+                url: 'GuardarNuevoProducto.php',
+                method: 'POST',
                 data: {
                     nombre: nuevoNombre,
                     descripcion: nuevaDescripcion,
@@ -614,7 +619,7 @@ $(document).ready(function () {
                     stock: nuevoStock,
                     imagen: nuevaImagen
                 },
-                success: function(response) {
+                success: function (response) {
                     // Aquí se maneja la respuesta del servidor
                     var data = JSON.parse(response);  // Parsear la respuesta JSON
                     if (data.success) {
@@ -625,13 +630,12 @@ $(document).ready(function () {
                         alert('Error: ' + data.mensaje);
                     }
                 },
-                error: function() {
+                error: function () {
                     alert('Hubo un error en la solicitud.');
                 }
             });
         });
     });
-    
 
 
 });

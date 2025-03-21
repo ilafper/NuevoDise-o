@@ -65,7 +65,7 @@ try {
 
     // Crear la nueva petición
     $nuevaPeticion = [
-        "id" => uniqid("peti_", true), // ID único para cada petición, prefijado con "peti_"
+        "id" => uniqid("peti_", true), // ID único para cada petición
         "nombre_usuario" => $usuario_nombre,
         "carrito" => $carrito,
         "estado" => "pendiente",
@@ -74,7 +74,7 @@ try {
     // Agregar la nueva petición a la lista de peticiones del admin
     $loginCollection->updateOne(
         ["rol" => "admin"], // Buscar al admin
-        ['$push' => ["peticiones" => $nuevaPeticion]]  // Agregar la nueva petición al arreglo
+        ['$push' => ["peticiones" => $nuevaPeticion]]  // Agregar la nueva petición
     );
     // Vaciar el carrito del usuario
     $loginCollection->updateOne(
